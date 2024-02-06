@@ -4,8 +4,12 @@ import { Task } from "../../interfaces/task";
 import { useFormik } from "formik";
 import { useMemo } from "react";
 import { date, object, string } from "yup";
+import { createTask } from "../../socket";
+interface TaskModalProps {
+  task: Task;
+}
 
-export default function TaskModal(task: Task) {
+export default function TaskModal({ task }: TaskModalProps) {
   const taskValidation = useMemo(
     () =>
       object().shape({
@@ -27,9 +31,8 @@ export default function TaskModal(task: Task) {
     validationSchema: taskValidation,
     //enableReinitialize: true,
     onSubmit: (values) => {
-      console.log(values);
-      //clear form;
-      formik.resetForm();
+      createTask(values);
+      //  formik.resetForm();
     },
   });
 
@@ -93,11 +96,6 @@ export default function TaskModal(task: Task) {
           placeholder="Due Date"
           onChange={(e) => formik.setFieldValue("dueDate", e)}
           required
-          error={
-            formik.touched.dueDate && formik.errors.dueDate
-              ? formik.errors.dueDate
-              : ""
-          }
           minDate={new Date()}
           mt="md"
         />

@@ -10,5 +10,4 @@ export interface Task {
   updatedBy: string;
   assignee: string;
   dueDate: Date;
-  address: string;
 }
