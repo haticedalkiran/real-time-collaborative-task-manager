@@ -1,4 +1,5 @@
 import io, { Socket } from "socket.io-client";
+import { Task } from "./interfaces/task";
 
 const SOCKET_URL: string = "http://localhost:3000";
 
@@ -9,14 +10,14 @@ export const initSocket = () => {
   socket.on("connect", () => console.log("connected."));
 };
 
-export const receiveTasksSocket = (callback: (data: any) => void) => {
+export const receiveTasksSocket = (callback: (data: Task[]) => void) => {
   console.log("receiveTasksSocket");
-  socket.on("receive-tasks", (data: any) => {
+  socket.on("receive-tasks", (data: Task[]) => {
     callback(data);
   });
 };
 
-export const createTaskSocket = (task: any) => {
+export const createTaskSocket = (task: Task) => {
   if (socket) socket.emit("new-task", task);
 };
 
@@ -25,7 +26,7 @@ export const deleteTaskSocket = (id: string) => {
   if (socket) socket.emit("delete-task", id);
 };
 
-export const updateTaskSocket = (task: any) => {
+export const updateTaskSocket = (task: Task) => {
   console.log("updateTaskSocket", task);
   if (socket) socket.emit("update-task", task);
 };

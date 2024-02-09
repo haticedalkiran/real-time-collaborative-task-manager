@@ -37,34 +37,33 @@ export default function TaskModal({
   const formik = useFormik({
     initialValues: {
       title: task?.title || "",
-      description: task?.description || "",
+      detail: task?.detail || "",
       assignee: task?.assignee || "",
       dueDate: task?.dueDate ? new Date(task?.dueDate) : undefined,
     },
     validationSchema: taskValidation,
     enableReinitialize: true,
     onSubmit: (values) => {
-      // createTaskSocket({
-      //   ...values,
-      //   dueDate: values.dueDate?.toISOString(),
-      //   reporter: "hatice",
-      //   createdAt: new Date().toISOString(),
-      //   status: TaskStatus.Open,
-      // });
-
-      //
-      // //  formik.resetForm(););
-      // dispatch(addTask(values));
-
-      console.log("values", task);
-      updateTaskSocket({
+      createTaskSocket({
         ...values,
-        id: task?._id,
         dueDate: values.dueDate?.toISOString(),
         reporter: "hatice",
         createdAt: new Date().toISOString(),
-        status: TaskStatus.Done,
+        status: TaskStatus.Open,
       });
+
+      //  formik.resetForm(););
+      dispatch(addTask(values));
+
+      // console.log("values", task);
+      // updateTaskSocket({
+      //   ...values,
+      //   id: task?._id,
+      //   dueDate: values.dueDate?.toISOString(),
+      //   reporter: "hatice",
+      //   createdAt: new Date().toISOString(),
+      //   status: TaskStatus.Done,
+      // });
       onModalClose();
     },
   });
@@ -94,10 +93,10 @@ export default function TaskModal({
           mt="md"
         />
         <Textarea
-          name="description"
-          label="Description"
-          placeholder="Description"
-          value={formik.values.description}
+          name="detail"
+          label="Detail"
+          placeholder="Detail"
+          value={formik.values.detail}
           onChange={formik.handleChange}
           mt="md"
         />

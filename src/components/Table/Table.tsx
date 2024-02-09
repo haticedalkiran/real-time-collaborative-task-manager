@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import TaskModal from "../TaskModal/TaskModal";
+import DeleteTaskModal from "./components/DeleteTaskModal";
 
 interface TableProps {
   //onAddClick?: () => void;
@@ -18,6 +19,7 @@ interface TableProps {
 export default function Table({}: TableProps) {
   const dispatch = useDispatch();
   const [isModalOpened, setIsModalOpened] = useState(false);
+  const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
@@ -26,16 +28,14 @@ export default function Table({}: TableProps) {
     receiveTasksSocket((data: any) => {
       dispatch(receiveTasks(data));
     });
-    console.log("tasks table", tasks);
-    // socket.on("receive-tasks", (data: any) => {
-    //   dispatch(receiveTasks(data));
-    // });
   }, []);
 
-  const handleDeleteItem = (id: any) => {
-    console.log("handleDeleteItem", id._id);
-    deleteTaskSocket(id._id);
-    dispatch(deleteTask(id.id));
+  const handleDeleteItem = (task: any) => {
+    setIsDeleteModalOpened(true);
+    setSelectedTask(task);
+
+    // deleteTaskSocket(task._id);
+    // dispatch(deleteTask(task.id));
   };
   const handleEditItem = (task: Task) => {
     console.log("handleEditItem", task);
@@ -118,6 +118,11 @@ export default function Table({}: TableProps) {
         task={selectedTask ? selectedTask : undefined}
         isModalOpened={isModalOpened}
         onModalClose={() => setIsModalOpened(false)}
+      />
+      <DeleteTaskModal
+        task={selectedTask ? selectedTask : undefined}
+        isModalOpened={isDeleteModalOpened}
+        onClose={() => setIsDeleteModalOpened(false)}
       />
     </div>
   );
