@@ -1,4 +1,5 @@
 export interface Task {
+  _id: string;
   id: string;
   title: string;
   description: string;
@@ -9,5 +10,5 @@ export interface Task {
   createdBy: string;
   updatedBy: string;
   assignee: string;
-  dueDate: Date;
+  dueDate: string;
 }

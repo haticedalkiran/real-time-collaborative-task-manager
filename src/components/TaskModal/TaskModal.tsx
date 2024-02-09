@@ -4,12 +4,23 @@ import { Task } from "../../interfaces/task";
 import { useFormik } from "formik";
 import { useMemo } from "react";
 import { date, object, string } from "yup";
-import { createTask } from "../../socket";
+import { useDispatch } from "react-redux";
+import { addTask } from "../../store/tasks.state";
+import { createTaskSocket, updateTaskSocket } from "../../socket";
+import { TaskStatus } from "../../enums/task-status";
+
 interface TaskModalProps {
-  task: Task;
+  task?: Task;
+  isModalOpened: boolean;
+  onModalClose: () => void;
 }
 
-export default function TaskModal({ task }: TaskModalProps) {
+export default function TaskModal({
+  task,
+  isModalOpened,
+  onModalClose,
+}: TaskModalProps) {
+  const dispatch = useDispatch();
   const taskValidation = useMemo(
     () =>
       object().shape({
@@ -21,25 +32,47 @@ export default function TaskModal({ task }: TaskModalProps) {
     []
   );
 
+  //TODO: handlemodalclose and clear task state
+
   const formik = useFormik({
     initialValues: {
-      title: task.title || "",
-      description: task.description || "",
-      assignee: task.assignee || "",
-      dueDate: task.dueDate || "",
+      title: task?.title || "",
+      description: task?.description || "",
+      assignee: task?.assignee || "",
+      dueDate: task?.dueDate ? new Date(task?.dueDate) : undefined,
     },
     validationSchema: taskValidation,
-    //enableReinitialize: true,
+    enableReinitialize: true,
     onSubmit: (values) => {
-      createTask(values);
-      //  formik.resetForm();
+      // createTaskSocket({
+      //   ...values,
+      //   dueDate: values.dueDate?.toISOString(),
+      //   reporter: "hatice",
+      //   createdAt: new Date().toISOString(),
+      //   status: TaskStatus.Open,
+      // });
+
+      //
+      // //  formik.resetForm(););
+      // dispatch(addTask(values));
+
+      console.log("values", task);
+      updateTaskSocket({
+        ...values,
+        id: task?._id,
+        dueDate: values.dueDate?.toISOString(),
+        reporter: "hatice",
+        createdAt: new Date().toISOString(),
+        status: TaskStatus.Done,
+      });
+      onModalClose();
     },
   });
 
   return (
     <Modal
-      opened={true}
-      onClose={() => {}}
+      opened={isModalOpened}
+      onClose={() => onModalClose()}
       title="Create Task"
       overlayProps={{
         backgroundOpacity: 0.55,
