@@ -4,35 +4,42 @@ import { Task } from "../../interfaces/task";
 import { useFormik } from "formik";
 import { useMemo } from "react";
 import { date, object, string } from "yup";
-import { useDispatch } from "react-redux";
-import { addTask } from "../../store/tasks.state";
 import { createTaskSocket, updateTaskSocket } from "../../socket";
 import { TaskStatus } from "../../enums/task-status";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { setSelectedTask } from "../../store/modal.state";
+import { useDispatch } from "react-redux";
+import { v4 as uuid } from "uuid";
 
 interface TaskModalProps {
-  task?: Task;
   isModalOpened: boolean;
   onModalClose: () => void;
 }
 
 export default function TaskModal({
-  task,
   isModalOpened,
   onModalClose,
 }: TaskModalProps) {
   const dispatch = useDispatch();
+  const task = useSelector((state: RootState) => state.modal.task);
+  const action = useSelector((state: RootState) => state.modal.action);
+
+  //reset selected task
+  const handleModalClose = () => {
+    dispatch(setSelectedTask({} as Task));
+    onModalClose();
+  };
+
   const taskValidation = useMemo(
     () =>
       object().shape({
         title: string().required("Title is required"),
-
         assignee: string().required("Assignee is required"),
         dueDate: date().required("Due date is required"),
       }),
     []
   );
-
-  //TODO: handlemodalclose and clear task state
 
   const formik = useFormik({
     initialValues: {
@@ -44,26 +51,20 @@ export default function TaskModal({
     validationSchema: taskValidation,
     enableReinitialize: true,
     onSubmit: (values) => {
-      createTaskSocket({
+      const formValues: Task = {
         ...values,
+        _id: task._id || uuid(),
         dueDate: values.dueDate?.toISOString(),
         reporter: "hatice",
         createdAt: new Date().toISOString(),
-        status: TaskStatus.Open,
-      });
+        status: TaskStatus.Done,
+      };
 
-      //  formik.resetForm(););
-      dispatch(addTask(values));
+      if (action === "create") {
+        console.log("formValues", formValues);
+        createTaskSocket(formValues);
+      } else if (action === "update") updateTaskSocket(formValues);
 
-      // console.log("values", task);
-      // updateTaskSocket({
-      //   ...values,
-      //   id: task?._id,
-      //   dueDate: values.dueDate?.toISOString(),
-      //   reporter: "hatice",
-      //   createdAt: new Date().toISOString(),
-      //   status: TaskStatus.Done,
-      // });
       onModalClose();
     },
   });
@@ -71,7 +72,7 @@ export default function TaskModal({
   return (
     <Modal
       opened={isModalOpened}
-      onClose={() => onModalClose()}
+      onClose={handleModalClose}
       title="Create Task"
       overlayProps={{
         backgroundOpacity: 0.55,
@@ -133,7 +134,7 @@ export default function TaskModal({
         />
 
         <Button type="submit" onClick={formik.submitForm} mt="md">
-          Create
+          {action === "create" ? "Create" : "Update"}
         </Button>
       </Box>
     </Modal>

@@ -2,8 +2,13 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { receiveTasksSocket } from "./socket";
 import { receiveTasks } from "./store/tasks.state";
+import { Container } from "@mantine/core";
 
-export default function Container({ children }: { children: React.ReactNode }) {
+export default function ContainerListener({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -14,5 +19,9 @@ export default function Container({ children }: { children: React.ReactNode }) {
     return () => {};
   }, []);
 
-  return <div>{children}</div>;
+  return (
+    <Container size={"xl"} p={"20px"}>
+      {children}
+    </Container>
+  );
 }

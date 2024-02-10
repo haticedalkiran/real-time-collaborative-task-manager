@@ -1,5 +1,7 @@
 import io, { Socket } from "socket.io-client";
 import { Task } from "./interfaces/task";
+import { store } from "./store/store";
+import { addTask, deleteTask, updateTask } from "./store/tasks.state";
 
 const SOCKET_URL: string = "http://localhost:3000";
 
@@ -10,25 +12,50 @@ export const initSocket = () => {
   socket.on("connect", () => console.log("connected."));
 };
 
+//create
+export const createTaskSocket = (task: Task) => {
+  if (socket) {
+    socket.emit("new-task", task);
+  }
+};
+
+//read
 export const receiveTasksSocket = (callback: (data: Task[]) => void) => {
-  console.log("receiveTasksSocket");
   socket.on("receive-tasks", (data: Task[]) => {
     callback(data);
   });
 };
 
-export const createTaskSocket = (task: Task) => {
-  if (socket) socket.emit("new-task", task);
+//update
+export const updateTaskSocket = (task: Task) => {
+  if (socket) socket.emit("update-task", task);
 };
 
+//delete
 export const deleteTaskSocket = (id: string) => {
-  console.log("deleteTaskSocket", id);
   if (socket) socket.emit("delete-task", id);
 };
 
-export const updateTaskSocket = (task: Task) => {
-  console.log("updateTaskSocket", task);
-  if (socket) socket.emit("update-task", task);
+export const disconnectSocket = () => {
+  if (socket) socket.disconnect();
 };
+
+//listeners
+socket.on("task-deleted", (taskId: string) => {
+  store.dispatch(deleteTask(taskId));
+});
+
+socket.on("task-created", (newTask: any) => {
+  store.dispatch(addTask(newTask));
+});
+
+socket.on("task-updated", (updatedTask: Task) => {
+  console.log("task-updated", updatedTask);
+  store.dispatch(updateTask(updatedTask));
+});
+
+socket.on("error", (error: any) => {
+  console.log(error);
+});
 
 export default socket;

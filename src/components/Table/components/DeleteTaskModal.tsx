@@ -1,42 +1,37 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Divider,
-  Group,
-  Modal,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Alert, Button, Group, Modal, Stack, Text } from "@mantine/core";
 import { Task } from "../../../interfaces/task";
-import { useState } from "react";
+import { useEffect } from "react";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { deleteTaskSocket } from "../../../socket";
-import { deleteTask } from "../../../store/tasks.state";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store/store";
+import { setSelectedTask } from "../../../store/modal.state";
 
 interface DeleteTaskModalProps {
-  task: Task | undefined;
   isModalOpened: boolean;
   onClose: () => void;
 }
 
 export default function DeleteTaskModal({
-  task,
   isModalOpened,
   onClose,
 }: DeleteTaskModalProps) {
   const dispatch = useDispatch();
+  const selectedTask = useSelector((state: RootState) => state.modal.task);
+
+  useEffect(() => {
+    console.log("selectedTask", selectedTask);
+  }, [selectedTask]);
 
   const handleDeleteItem = () => {
-    console.log("handleDeleteItem", task);
-    // setIsDeleteModalOpened(true);
-    // setSelectedTask(task);
-    deleteTaskSocket(task?._id);
-    dispatch(deleteTask(task?._id));
+    deleteTaskSocket(selectedTask._id);
     handleModalClose();
   };
+
+  //reset selected task
   const handleModalClose = () => {
+    dispatch(setSelectedTask({} as Task));
     onClose();
   };
 
@@ -44,7 +39,7 @@ export default function DeleteTaskModal({
     <Modal
       opened={isModalOpened}
       onClose={handleModalClose}
-      title={<Text fw={"bold"}>Task Name: {task?.title}</Text>}
+      title={<Text fw={"bold"}>Task Name: {selectedTask.title}</Text>}
     >
       <Stack>
         <Text>Are you sure you want to delete this task?</Text>
