@@ -30,11 +30,7 @@ import { sortBy } from "lodash";
 import { TaskStatus } from "../../enums/task-status";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 
-interface TableProps {
-  onAddClick?: () => void;
-}
-
-export default function Table({}: TableProps) {
+export default function Table() {
   const dispatch = useAppDispatch();
   const [records, setRecords] = useState<Task[]>([]);
   const [isModalOpened, setIsModalOpened] = useState(false);
@@ -57,7 +53,7 @@ export default function Table({}: TableProps) {
     });
   }, []);
 
-  const handleDeleteItem = (task: any) => {
+  const handleDeleteItem = (task: Task) => {
     if (!isLoggedIn) return;
 
     dispatch(setSelectedTask(task));
