@@ -3,9 +3,9 @@ import { Task } from "./interfaces/task";
 import { store } from "./store/store";
 import { addTask, deleteTask, updateTask } from "./store/tasks.state";
 
-const SOCKET_URL: string = "http://localhost:3000";
-
-const socket: Socket = io(SOCKET_URL, { transports: ["websocket"] });
+const socket: Socket = io(import.meta.env.VITE_SOCKET_URL, {
+  transports: ["websocket"],
+});
 
 export const initSocket = () => {
   console.log("Connecting...");
@@ -45,12 +45,11 @@ socket.on("task-deleted", (taskId: string) => {
   store.dispatch(deleteTask(taskId));
 });
 
-socket.on("task-created", (newTask: any) => {
+socket.on("task-created", (newTask: Task) => {
   store.dispatch(addTask(newTask));
 });
 
 socket.on("task-updated", (updatedTask: Task) => {
-  console.log("task-updated", updatedTask);
   store.dispatch(updateTask(updatedTask));
 });
 

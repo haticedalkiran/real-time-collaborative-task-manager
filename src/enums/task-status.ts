@@ -2,6 +2,6 @@ export enum TaskStatus {
   Open = "Open",
   InProgress = "In Progress",
   Done = "Done",
-  Declined = "Canceled",
+  Declined = "Declined",
   Waiting = "Waiting",
 }

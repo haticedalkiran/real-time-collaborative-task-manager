@@ -1,12 +1,11 @@
 import { Alert, Button, Group, Modal, Stack, Text } from "@mantine/core";
 import { Task } from "../../../interfaces/task";
-import { useEffect } from "react";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { deleteTaskSocket } from "../../../socket";
-import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { setSelectedTask } from "../../../store/modal.state";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
 
 interface DeleteTaskModalProps {
   isModalOpened: boolean;
@@ -17,15 +16,11 @@ export default function DeleteTaskModal({
   isModalOpened,
   onClose,
 }: DeleteTaskModalProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const selectedTask = useSelector((state: RootState) => state.modal.task);
 
-  useEffect(() => {
-    console.log("selectedTask", selectedTask);
-  }, [selectedTask]);
-
   const handleDeleteItem = () => {
-    deleteTaskSocket(selectedTask._id);
+    deleteTaskSocket(selectedTask._id as string);
     handleModalClose();
   };
 

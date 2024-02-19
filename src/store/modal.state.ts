@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Task } from "../interfaces/task";
 
 type ActionStatus = "create" | "update" | "";
+
 interface TasksState {
   action: ActionStatus;
   task: Task;
@@ -21,7 +22,6 @@ export const ModalState = createSlice({
       state.action = action.payload;
     },
     setSelectedTask: (state, action: PayloadAction<Task>) => {
-      console.log("action.payload", action.payload);
       state.task = action.payload;
     },
   },

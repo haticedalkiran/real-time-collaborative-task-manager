@@ -5,13 +5,11 @@ import { Task } from "../interfaces/task";
 interface TasksState {
   tasks: Task[];
   loading: boolean;
-  error: string | null;
 }
 
 const initialState: TasksState = {
   tasks: [],
   loading: false,
-  error: null,
 };
 
 export const Tasks = createSlice({
@@ -25,7 +23,6 @@ export const Tasks = createSlice({
       state.tasks.push(action.payload);
     },
     deleteTask: (state, action: PayloadAction<any>) => {
-      console.log("deleteTask", action.payload);
       state.tasks = state.tasks.filter((task) => task._id !== action.payload);
     },
     updateTask: (state, action: PayloadAction<any>) => {
