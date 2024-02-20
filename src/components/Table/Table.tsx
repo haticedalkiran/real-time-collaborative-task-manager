@@ -249,7 +249,7 @@ export default function Table() {
           },
         ]}
         minHeight={100}
-        idAccessor={(record) => record._id}
+        idAccessor={(record) => record._id ?? ""}
         records={records}
       />
 
