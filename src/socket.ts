@@ -53,7 +53,7 @@ socket.on("task-updated", (updatedTask: Task) => {
   store.dispatch(updateTask(updatedTask));
 });
 
-socket.on("error", (error: any) => {
+socket.on("error", (error: string) => {
   console.log(error);
 });
 

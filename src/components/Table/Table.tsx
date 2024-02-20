@@ -48,7 +48,7 @@ export default function Table() {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
 
   useEffect(() => {
-    receiveTasksSocket((data: any) => {
+    receiveTasksSocket((data: Task[]) => {
       dispatch(receiveTasks(data));
     });
   }, []);
@@ -193,14 +193,13 @@ export default function Table() {
             accessor: "createdAt",
             title: "Created At",
             sortable: true,
-            render: ({ createdAt }: { createdAt: string }) =>
-              dayjs(createdAt).format("DD.MM.YYYY"),
+            render: (record) => dayjs(record.createdAt).format("DD.MM.YYYY"),
           },
           {
             accessor: "dueDate",
             title: "Due Date",
             sortable: true,
-            render: (record: any) => dayjs(record.dueDate).format("DD.MM.YYYY"),
+            render: (record) => dayjs(record.dueDate).format("DD.MM.YYYY"),
           },
           {
             accessor: "actions",
