@@ -2,6 +2,10 @@
 
 The Real-Time Collaborative Task Manager simplifies teamwork by managing tasks efficiently. It uses Mantine Datatable for a better user interface with features like filtering and sorting tasks easily. It also updates tasks in real time using WebSocket and makes sure everyone sees the same information at all times.
 
+## Platforms
+
+I chose MongoDB as the database and deployed it on MongoDB Cloud for secure and scalable storage. The backend developed with Express and hosted on [Render](https://task-manager-be-ecsh.onrender.com). The frontend is deployed on Vercel, ensuring fast loading and easy access.
+
 ## Backend Access
 
 To access the backend repository for the Real-Time Collaborative Task Manager, please visit the following link: [task-manager-be](https://github.com/haticedalkiran/task-manager-be)
